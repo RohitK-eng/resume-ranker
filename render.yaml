@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: resume-ranker-frontend
+    runtime: static
+    staticPublishPath: .

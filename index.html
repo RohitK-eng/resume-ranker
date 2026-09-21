@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Resume Ranking System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">AI Resume Ranking System</div>
+    <nav>
+      <button class="nav-btn active" data-view="rank">Rank candidates</button>
+      <button class="nav-btn" data-view="architecture">System architecture</button>
+      <button class="nav-btn" data-view="status">Progress &amp; roadmap</button>
+    </nav>
+    <p class="sidebar-note">Prototype build</p>
+  </aside>
+
+  <main>
+    <!-- RANK VIEW -->
+    <section id="view-rank" class="view active">
+      <h1>Rank candidates for a job</h1>
+      <p class="lead">Paste a job description, add resumes, and see candidates ordered by how well they match.</p>
+
+      <div class="grid-2">
+        <div class="panel">
+          <label for="jd">Job description</label>
+          <textarea id="jd" rows="9"></textarea>
+          <div class="row">
+            <button class="btn ghost" id="btn-sample">Reset to sample</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <label for="files">Resumes</label>
+          <label class="drop" for="files">
+            <span>Choose resume files</span>
+            
+          </label>
+          <input type="file" id="files" multiple accept=".txt,.pdf,.doc,.docx" hidden>
+          <ul id="file-list" class="file-list"></ul>
+          <p class="hint" id="pool-count"></p>
+        </div>
+      </div>
+
+      <div class="row bar">
+        <button class="btn primary" id="btn-rank">Rank candidates</button>
+        <div class="filter">
+          <label for="min">Minimum score: <output id="min-out">0</output></label>
+          <input type="range" id="min" min="0" max="100" value="0">
+        </div>
+        <button class="btn ghost" id="btn-export" disabled>Export CSV</button>
+      </div>
+
+      <div id="results" class="results" aria-live="polite">
+        <p class="empty">No results yet. Add a job description and select Rank candidates.</p>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE VIEW -->
+    <section id="view-architecture" class="view">
+      <h1>System architecture</h1>
+      <p class="lead">How the proposed system processes a job description and resumes from input to candidate ranking.</p>
+      <div class="flow">
+        <div class="node done"><b>1. Input</b><span>Enter job description and upload resumes</span></div>
+        <div class="arrow">→</div>
+        <div class="node done"><b>2. Resume processing</b><span>Read resume content and identify candidate information</span></div>
+        <div class="arrow">→</div>
+        <div class="node done"><b>3. Matching</b><span>Compare resume information with job requirements</span></div>
+        <div class="arrow">→</div>
+        <div class="node done"><b>4. Scoring</b><span>Calculate a relevance score for each candidate</span></div>
+        <div class="arrow">→</div>
+        <div class="node done"><b>5. Ranking</b><span>Display candidates in ranked order with score details</span></div>
+      </div>
+      <div class="panel">
+        <h2>Tool selection</h2>
+        <table class="plain">
+          <thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Frontend</td><td>HTML, CSS, JavaScript</td><td>No build step, so the team can edit and deploy immediately.</td></tr>
+            <tr><td>Hosting</td><td>Render static site</td><td>Free, deploys from GitHub on every push.</td></tr>
+            <tr><td>Backend</td><td>Planned REST API</td><td>Will receive job and resume data and return ranking results.</td></tr>
+            <tr><td>Resume processing</td><td>Planned PDF/DOCX parser</td><td>Will extract usable text and candidate information from uploaded resumes.</td></tr>
+            <tr><td>Ranking</td><td>Frontend prototype</td><td>Currently demonstrates matching, scoring and candidate ranking with sample/text data.</td></tr>
+            <tr><td>Database</td><td>Planned</td><td>Will store jobs, candidates and ranking information.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- STATUS VIEW -->
+    <section id="view-status" class="view">
+      <h1>Progress &amp; roadmap</h1>
+      <p class="lead">Current frontend implementation and the next development stages.</p>
+      <div class="grid-3">
+        <div class="panel">
+          <h2>Built</h2>
+          <ul class="checks">
+            <li>Job description input</li>
+            <li>Resume file selection</li>
+            <li>Resume text reading for prototype data</li>
+            <li>Job-to-resume skill matching</li>
+            <li>Candidate scoring and ranked results</li>
+            <li>Score breakdown and matched/missing skills</li>
+            <li>Minimum score filter</li>
+            <li>Shortlisting and CSV export</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h2>Prototype limitations</h2>
+          <ul class="checks partial">
+            <li>Current ranking uses browser-based keyword matching for demonstration.</li>
+            <li>Sample candidates are used when demonstrating the interface.</li>
+            <li>PDF/DOCX files can be selected, but full document extraction is a later integration step.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h2>Planned</h2>
+          <ul class="checks todo">
+            <li>PDF and DOCX text extraction</li>
+            <li>REST API integration with the processing layer</li>
+            <li>Database integration for jobs and candidates</li>
+            <li>Advanced semantic matching</li>
+            <li>Explainable ranking feedback</li>
+            <li>Recruiter login and saved jobs</li>
+            <li>Candidate comparison and analytics</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="drawer" class="drawer" hidden>
+    <div class="drawer-inner" role="dialog" aria-modal="true" aria-labelledby="d-name">
+      <button class="close" id="d-close" aria-label="Close details">Close</button>
+      <h2 id="d-name"></h2>
+      <p id="d-sub" class="hint"></p>
+      <div id="d-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
