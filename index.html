@@ -44,7 +44,7 @@
             <span>Choose resume files</span>
             
           </label>
-          <input type="file" id="files" multiple accept=".txt,.pdf,.doc,.docx" hidden>
+          <input type="file" id="files" multiple accept=".txt,.pdf,.docx" hidden>
           <ul id="file-list" class="file-list"></ul>
           <p class="hint" id="pool-count"></p>
         </div>
@@ -106,7 +106,9 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs" type="module"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.9.0/mammoth.browser.min.js"></script>
+<script src="app.js" type="module"></script>
 </body>
 </html>
 
