@@ -11,16 +11,19 @@
 </head>
 <body>
   <aside class="sidebar">
-    <div class="brand">AI Resume Ranking System</div>
     <nav>
       <button class="nav-btn active" data-view="rank">Rank candidates</button>
       <button class="nav-btn" data-view="architecture">System architecture</button>
-      <button class="nav-btn" data-view="status">Progress &amp; roadmap</button>
     </nav>
     <p class="sidebar-note">Prototype build</p>
   </aside>
 
   <main>
+    <header class="site-header">
+      <h1>AI Resume Ranking System</h1>
+      <p>AI-assisted resume screening and candidate ranking prototype</p>
+    </header>
+
     <!-- RANK VIEW -->
     <section id="view-rank" class="view active">
       <h1>Rank candidates for a job</h1>
@@ -92,46 +95,6 @@
       </div>
     </section>
 
-    <!-- STATUS VIEW -->
-    <section id="view-status" class="view">
-      <h1>Progress &amp; roadmap</h1>
-      <p class="lead">Current frontend implementation and the next development stages.</p>
-      <div class="grid-3">
-        <div class="panel">
-          <h2>Built</h2>
-          <ul class="checks">
-            <li>Job description input</li>
-            <li>Resume file selection</li>
-            <li>Resume text reading for prototype data</li>
-            <li>Job-to-resume skill matching</li>
-            <li>Candidate scoring and ranked results</li>
-            <li>Score breakdown and matched/missing skills</li>
-            <li>Minimum score filter</li>
-            <li>Shortlisting and CSV export</li>
-          </ul>
-        </div>
-        <div class="panel">
-          <h2>Prototype limitations</h2>
-          <ul class="checks partial">
-            <li>Current ranking uses browser-based keyword matching for demonstration.</li>
-            <li>Sample candidates are used when demonstrating the interface.</li>
-            <li>PDF/DOCX files can be selected, but full document extraction is a later integration step.</li>
-          </ul>
-        </div>
-        <div class="panel">
-          <h2>Planned</h2>
-          <ul class="checks todo">
-            <li>PDF and DOCX text extraction</li>
-            <li>REST API integration with the processing layer</li>
-            <li>Database integration for jobs and candidates</li>
-            <li>Advanced semantic matching</li>
-            <li>Explainable ranking feedback</li>
-            <li>Recruiter login and saved jobs</li>
-            <li>Candidate comparison and analytics</li>
-          </ul>
-        </div>
-      </div>
-    </section>
   </main>
 
   <div id="drawer" class="drawer" hidden>
@@ -146,3 +109,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+
