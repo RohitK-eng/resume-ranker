@@ -90,4 +90,14 @@ tbody tr.clickable:hover{background:#f1f7f7}
   .arrow{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.remove-btn{
+    margin-left:8px;
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:16px;
+}
 
+.remove-btn:hover{
+    transform:scale(1.1);
+}
