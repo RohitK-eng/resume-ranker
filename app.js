@@ -129,15 +129,53 @@ function renderResults() {
         <td><b>${esc(r.name)}</b><br><small class="hint">${esc(r.role)} · ${r.years} yrs</small></td>
         <td><div class="score"><b>${r.score}</b><div class="meter"><i style="width:${r.score}%"></i></div></div></td>
         <td>${r.matched.slice(0,4).map(s => `<span class="chip">${esc(s)}</span>`).join('')}${r.missing.length ? `<span class="chip miss">${r.missing.length} missing</span>` : ''}</td>
-        <td><button class="star ${shortlist.has(r.id) ? 'on' : ''}" data-star="${r.id}" aria-label="Toggle shortlist for ${esc(r.name)}" aria-pressed="${shortlist.has(r.id)}">★</button></td>
+        <td>
+  <button class="star ${shortlist.has(r.id) ? 'on' : ''}"
+          data-star="${r.id}"
+          aria-label="Toggle shortlist for ${esc(r.name)}"
+          aria-pressed="${shortlist.has(r.id)}">★</button>
+
+  <button class="remove-btn"
+          data-remove="${r.id}"
+          aria-label="Remove ${esc(r.name)}">❌</button>
+</td>
       </tr>`;
     }).join('')}</tbody></table></div>`;
 }
 
 $('results').addEventListener('click', (e) => {
+
+  const removeBtn = e.target.closest('[data-remove]');
+
+  if (removeBtn) {
+    const id = removeBtn.dataset.remove;
+
+    ranked = ranked.filter(r => r.id !== id);
+    uploaded = uploaded.filter(u => u.id !== id);
+
+    shortlist.delete(id);
+
+    renderResults();
+    renderFiles();
+
+    return;
+  }
+
   const star = e.target.closest('[data-star]');
-  if (star) { const id = star.dataset.star; shortlist.has(id) ? shortlist.delete(id) : shortlist.add(id); renderResults(); return; }
+
+  if (star) {
+    const id = star.dataset.star;
+
+    shortlist.has(id)
+      ? shortlist.delete(id)
+      : shortlist.add(id);
+
+    renderResults();
+    return;
+  }
+
   const row = e.target.closest('tr[data-id]');
+
   if (row) openDrawer(row.dataset.id);
 });
 
