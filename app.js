@@ -1,15 +1,4 @@
-/* ========================================================== 
-   AI Resume Ranking System – prototype frontend 
-   HOW TO CONNECT THE AI MODEL: 
-   1. Set USE_API = true and point API_URL to the backend. 
-   2. The backend receives { jobDescription, candidates:[{id,name,text}] } 
-      and must return an array of: 
-      { id, score (0-100), matched:[], missing:[], 
-        breakdown:{ skills, experience, education }  // each 0-100 
-        explanation: "optional plain-language reason" } 
-   Everything below the API section is UI only. 
-   ========================================================== */ 
- 
+
 const USE_API = false; 
 const API_URL = '/api/rank'; 
  
