@@ -143,11 +143,30 @@ function renderResults() {
     }).join('')}</tbody></table></div>`; 
 } 
  
-$('results').addEventListener('click', (e) => { 
-  const star = e.target.closest('[data-star]'); 
-  if (star) { const id = star.dataset.star; shortlist.has(id) ? shortlist.delete(id) : shortlist.add(id); renderResults(); return; } 
-  const row = e.target.closest('tr[data-id]'); 
-  if (row) openDrawer(row.dataset.id); 
+$('results').addEventListener('click', (e) => {
+  const removeBtn = e.target.closest('[data-remove]');
+  if (removeBtn) {
+    const id = removeBtn.dataset.remove;
+
+    uploaded = uploaded.filter(c => c.id !== id);
+    ranked = ranked.filter(r => r.id !== id);
+    shortlist.delete(id);
+
+    renderFiles();
+    renderResults();
+    return;
+  }
+
+  const star = e.target.closest('[data-star]');
+  if (star) {
+    const id = star.dataset.star;
+    shortlist.has(id) ? shortlist.delete(id) : shortlist.add(id);
+    renderResults();
+    return;
+  }
+
+  const row = e.target.closest('tr[data-id]');
+  if (row) openDrawer(row.dataset.id);
 }); 
  
 function bar(label, v) { 
