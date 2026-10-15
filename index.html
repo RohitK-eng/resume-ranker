@@ -109,13 +109,45 @@
       <button class="close" id="d-close" aria-label="Close details">Close</button>
       <h2 id="d-name"></h2>
       <p id="d-sub" class="hint"></p>
-      <div id="d-body"></div>
+      <div id="d-body">
+  <section class="chart-panel">
+    <h3>Candidate Match Analysis</h3>
+    <p class="chart-subtitle">
+      Breakdown of the candidate's suitability for this role
+    </p>
+
+    <div class="pie-chart-container">
+      <canvas id="candidatePieChart"></canvas>
+    </div>
+
+    <div class="chart-legend">
+      <div class="legend-item">
+        <span class="legend-dot skills-dot"></span>
+        <span>Skills Match</span>
+        <strong id="chart-skills-value">0%</strong>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-dot experience-dot"></span>
+        <span>Experience</span>
+        <strong id="chart-experience-value">0%</strong>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-dot education-dot"></span>
+        <span>Education</span>
+        <strong id="chart-education-value">0%</strong>
+      </div>
+    </div>
+  </section>
+</div>
     </div>
   </div>
 
 <!-- Existing resume processing libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.9.0/mammoth.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 
 
 <script src="app.js"></script>
