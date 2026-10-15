@@ -98,68 +98,9 @@ tbody tr.clickable:hover{background:#f1f7f7}
     font-size:16px;
 }
 
-.flow .node {
-    position: relative;
-    cursor: pointer;
-    transform-origin: center;
-
-    transition:
-        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 0.6s ease,
-        border-color 0.6s ease,
-        background-color 0.6s ease;
+.remove-btn:hover{
+    transform:scale(1.1);
 }
-
-/* Gentle expansion on hover */
-.flow .node:hover {
-    transform: scale(1.025) translateY(-2px);
-    box-shadow: 0 5px 14px rgba(22, 32, 46, 0.08);
-    border-color: var(--accent);
-    background-color: #ffffff;
-    z-index: 2;
-}
-
-/* Soft heading transition */
-.flow .node b {
-    transition: color 0.6s ease;
-}
-
-.flow .node:hover b {
-    color: var(--accent);
-}
-
-/* Gentle description transition */
-.flow .node span {
-    transition: color 0.6s ease;
-}
-
-.flow .node:hover span {
-    color: var(--ink);
-}
-
-/* Respect reduced-motion preferences */
-@media (prefers-reduced-motion: reduce) {
-    .flow .node,
-    .flow .node b,
-    .flow .node span {
-        transition: none;
-    }
-
-    .flow .node:hover {
-        transform: none;
-    }
-}
-
-.candidate-details h3 {
-    font-size: 16px;
-    color: var(--brand);
-    margin: 22px 0 10px;
-}
-
-.candidate-details .bd {
-    margin: 14px 0;
-}
-
-.candidate-details .note {
+ .note {
     line-height: 1.7;
 }
