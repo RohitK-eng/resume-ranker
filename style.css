@@ -337,3 +337,16 @@ tbody tr.clickable:hover{background:#f1f7f7}
         transform: none;
     }
 }
+.candidate-details h3 {
+    font-size: 16px;
+    color: var(--brand);
+    margin: 22px 0 10px;
+}
+
+.candidate-details .bd {
+    margin: 14px 0;
+}
+
+.candidate-details .note {
+    line-height: 1.7;
+}
