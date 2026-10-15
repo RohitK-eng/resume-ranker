@@ -97,7 +97,7 @@ tbody tr.clickable:hover{background:#f1f7f7}
     cursor:pointer;
     font-size:16px;
 }
-```css
+
 
 .flow .node {
     position: relative;
@@ -150,8 +150,8 @@ tbody tr.clickable:hover{background:#f1f7f7}
         transform: none;
     }
 }
-```
-```css
+
+
 .export-buttons {
     display: flex;
     gap: 8px;
@@ -169,4 +169,4 @@ tbody tr.clickable:hover{background:#f1f7f7}
     background: var(--accent-soft);
     border-color: var(--accent);
 }
-```
+
