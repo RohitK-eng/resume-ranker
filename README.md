@@ -29,4 +29,4 @@ The backend must allow CORS from the frontend's domain.
 PDF/DOCX upload to the backend, real candidate database, login, compare two candidates, bias check.
 
 ## Deploy on Render
-New > Static Site > connect this repo > Build command: (empty) > Publish directory: `.`
+https://voting-management-system-1-171p.onrender.com
