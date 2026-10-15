@@ -55,7 +55,22 @@
           <label for="min">Minimum score: <output id="min-out">0</output></label>
           <input type="range" id="min" min="0" max="100" value="0">
         </div>
-        <button class="btn ghost" id="btn-export" disabled>Export CSV</button>
+        ```html
+<div class="export-buttons">
+  <button class="btn ghost" id="btn-export" disabled>
+    Export CSV
+  </button>
+
+  <button class="btn ghost" id="btn-export-pdf" disabled>
+    Export PDF
+  </button>
+
+  <button class="btn ghost" id="btn-export-doc" disabled>
+    Export Word
+  </button>
+</div>
+```
+
       </div>
 
       <div id="results" class="results" aria-live="polite">
@@ -105,9 +120,20 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  ```html
+<!-- Existing resume processing libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.9.0/mammoth.browser.min.js"></script>
+
+<!-- PDF report generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+
+<!-- Word document generation -->
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+
 <script src="app.js"></script>
+```
+
 </body>
 </html>
 
