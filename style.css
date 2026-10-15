@@ -151,3 +151,22 @@ tbody tr.clickable:hover{background:#f1f7f7}
     }
 }
 ```
+```css
+.export-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.export-buttons .btn {
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.export-buttons .btn:hover:not(:disabled) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+```
