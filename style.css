@@ -97,6 +97,60 @@ tbody tr.clickable:hover{background:#f1f7f7}
     cursor:pointer;
     font-size:16px;
 }
+```css
+/* Smooth hover animation for System Architecture boxes */
+.flow .node {
+    position: relative;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease,
+        background-color 0.3s ease;
+    cursor: pointer;
+    transform-origin: center;
+}
+
+/* Expand and lift the box when hovered */
+.flow .node:hover {
+    transform: scale(1.06) translateY(-5px);
+    box-shadow: 0 8px 20px rgba(22, 32, 46, 0.15);
+    border-color: var(--accent);
+    background-color: #ffffff;
+    z-index: 2;
+}
+
+/* Smoothly highlight the heading */
+.flow .node b {
+    transition: color 0.3s ease;
+}
+
+.flow .node:hover b {
+    color: var(--accent);
+}
+
+/* Smoothly change the description */
+.flow .node span {
+    transition: color 0.3s ease;
+}
+
+.flow .node:hover span {
+    color: var(--ink);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .flow .node,
+    .flow .node b,
+    .flow .node span {
+        transition: none;
+    }
+
+    .flow .node:hover {
+        transform: none;
+    }
+}
+```
+
 
 .remove-btn:hover{
     transform:scale(1.1);
