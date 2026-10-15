@@ -98,7 +98,7 @@ tbody tr.clickable:hover{background:#f1f7f7}
     font-size:16px;
 }
 ```css
-/* Smooth hover animation for System Architecture boxes */
+
 .flow .node {
     position: relative;
     transition:
@@ -151,7 +151,3 @@ tbody tr.clickable:hover{background:#f1f7f7}
 }
 ```
 
-
-.remove-btn:hover{
-    transform:scale(1.1);
-}
