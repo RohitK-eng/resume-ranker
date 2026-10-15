@@ -1,5 +1,5 @@
-const USE_API = false; 
-const API_URL = '/api/rank'; 
+const USE_API = true;
+const API_URL = 'http://127.0.0.1:5000/api/rank'; 
  
 /* ---------- Sample data (replace with DB later) ---------- */ 
 const SAMPLE_JD = `Machine Learning Engineer 
