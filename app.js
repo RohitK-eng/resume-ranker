@@ -57,18 +57,50 @@ function mockRank(jd, candidates) {
   }); 
 } 
  
-async function rankCandidates(jd, candidates) { 
-  if (USE_API) { 
-    const res = await fetch(API_URL, { 
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' }, 
-      body: JSON.stringify({ jobDescription: jd, candidates: candidates.map(c => ({ id: c.id, name: c.name, text: c.text || '' })) }) 
-    }); 
-    if (!res.ok) throw new Error('Ranking service returned ' + res.status); 
-    return res.json(); 
-  } 
-  return mockRank(jd, candidates); 
-} 
+
+async function rankCandidates(jd, candidates) {
+  if (!USE_API) {
+    return mockRank(jd, candidates);
+  }
+
+  const candidatesForAPI = candidates
+    .filter(c => !c.pending)
+    .map(c => ({
+      id: c.id,
+      name: c.name,
+      text: c.text || [
+        "Role: " + (c.role || ""),
+        "Skills: " + (c.skills || []).join(", "),
+        "Experience: " + (c.years || 0) + " years",
+        "Education: " + (c.edu || "")
+      ].join(". ")
+    }));
+
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      jobDescription: jd,
+      candidates: candidatesForAPI
+    })
+  });
+
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error("Ranking service returned " + res.status + ": " + message);
+  }
+
+  const data = await res.json();
+
+  if (!Array.isArray(data.results)) {
+    throw new Error("Unexpected response from ranking API");
+  }
+
+  return data.results;
+}
+
  
 /* ---------- Views ---------- */ 
 document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => { 
