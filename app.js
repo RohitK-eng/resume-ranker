@@ -104,7 +104,9 @@ $('files').addEventListener('change', async (e) => {
 function renderResults() { 
   const min = +$('min').value; 
   const rows = ranked.filter(r => r.pending || r.score >= min); 
-  $('btn-export').disabled = !ranked.length; 
+  $('btn-export').disabled = !ranked.length;
+$('btn-export-pdf').disabled = !ranked.length;
+$('btn-export-doc').disabled = !ranked.length; 
   if (!ranked.length) return; 
   if (!rows.length) { $('results').innerHTML = '<p class="empty">No candidates meet the minimum score. Lower the filter.</p>'; return; } 
   let rank = 0; 
@@ -209,6 +211,217 @@ $('btn-export').addEventListener('click', () => {
   a.click(); 
   URL.revokeObjectURL(a.href); 
 }); 
+```javascript
+/* ---------- Shared export data ---------- */
+
+function getExportCandidates() {
+  return ranked.filter(r => !r.pending);
+}
+
+function getExportDate() {
+  return new Date().toLocaleDateString();
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+
+  a.href = url;
+  a.download = filename;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ---------- Export PDF ---------- */
+
+$('btn-export-pdf').addEventListener('click', () => {
+  const candidates = getExportCandidates();
+
+  if (!candidates.length) {
+    alert('No ranked candidates available to export.');
+    return;
+  }
+
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert('PDF library could not be loaded. Check your internet connection.');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  let y = 20;
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 15;
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  doc.setFontSize(18);
+  doc.text('AI Resume Ranking Report', margin, y);
+
+  y += 10;
+
+  doc.setFontSize(10);
+  doc.text(`Generated: ${getExportDate()}`, margin, y);
+
+  y += 12;
+
+  candidates.forEach((c, index) => {
+    const details = [
+      `${index + 1}. ${c.name}`,
+      `Role: ${c.role}`,
+      `Match Score: ${c.score}/100`,
+      `Shortlisted: ${shortlist.has(c.id) ? 'Yes' : 'No'}`,
+      `Matched Skills: ${(c.matched || []).join(', ') || 'None'}`,
+      `Missing Skills: ${(c.missing || []).join(', ') || 'None'}`
+    ];
+
+    const wrapped = [];
+
+    details.forEach(line => {
+      const parts = doc.splitTextToSize(line, pageWidth - margin * 2);
+      wrapped.push(...parts);
+    });
+
+    const blockHeight = wrapped.length * 5 + 8;
+
+    if (y + blockHeight > pageHeight - margin) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFont('helvetica', 'bold');
+    doc.text(wrapped[0], margin, y);
+    y += 5;
+
+    doc.setFont('helvetica', 'normal');
+
+    wrapped.slice(1).forEach(line => {
+      if (y > pageHeight - margin) {
+        doc.addPage();
+        y = 20;
+      }
+
+      doc.text(line, margin, y);
+      y += 5;
+    });
+
+    y += 5;
+  });
+
+  doc.save('ranked-candidates.pdf');
+});
+
+/* ---------- Export Word document ---------- */
+
+$('btn-export-doc').addEventListener('click', async () => {
+  const candidates = getExportCandidates();
+
+  if (!candidates.length) {
+    alert('No ranked candidates available to export.');
+    return;
+  }
+
+  if (!window.docx) {
+    alert('Word document library could not be loaded. Check your internet connection.');
+    return;
+  }
+
+  try {
+    const {
+      Document,
+      Packer,
+      Paragraph,
+      TextRun,
+      HeadingLevel
+    } = window.docx;
+
+    const children = [
+      new Paragraph({
+        text: 'AI Resume Ranking Report',
+        heading: HeadingLevel.TITLE
+      }),
+
+      new Paragraph({
+        children: [
+          new TextRun({
+            text: `Generated: ${getExportDate()}`,
+            italics: true
+          })
+        ]
+      }),
+
+      new Paragraph({ text: '' })
+    ];
+
+    candidates.forEach((c, index) => {
+      children.push(
+        new Paragraph({
+          text: `${index + 1}. ${c.name}`,
+          heading: HeadingLevel.HEADING_1
+        }),
+
+        new Paragraph({
+          children: [
+            new TextRun({ text: 'Role: ', bold: true }),
+            new TextRun(String(c.role || 'Not specified'))
+          ]
+        }),
+
+        new Paragraph({
+          children: [
+            new TextRun({ text: 'Match Score: ', bold: true }),
+            new TextRun(`${c.score}/100`)
+          ]
+        }),
+
+        new Paragraph({
+          children: [
+            new TextRun({ text: 'Shortlisted: ', bold: true }),
+            new TextRun(shortlist.has(c.id) ? 'Yes' : 'No')
+          ]
+        }),
+
+        new Paragraph({
+          children: [
+            new TextRun({ text: 'Matched Skills: ', bold: true }),
+            new TextRun((c.matched || []).join(', ') || 'None')
+          ]
+        }),
+
+        new Paragraph({
+          children: [
+            new TextRun({ text: 'Missing Skills: ', bold: true }),
+            new TextRun((c.missing || []).join(', ') || 'None')
+          ]
+        }),
+
+        new Paragraph({ text: '' })
+      );
+    });
+
+    const report = new Document({
+      sections: [
+        {
+          children
+        }
+      ]
+    });
+
+    const blob = await Packer.toBlob(report);
+
+    downloadBlob(blob, 'ranked-candidates.docx');
+
+  } catch (error) {
+    console.error('Word export failed:', error);
+    alert('Could not generate the Word document. Check the browser console for details.');
+  }
+});
+```
+
  
 /* ---------- Init ---------- */ 
 $('jd').value = SAMPLE_JD; 
