@@ -27,6 +27,8 @@ const EDU_LEVEL = { 'b.tech':1, 'bachelor':1, 'm.tech':2, 'master':2, 'ms':2, 'p
 let uploaded = [];        // candidates added from files 
 let ranked = [];          // last ranking result 
 const shortlist = new Set(); 
+// Stores the currently displayed candidate pie chart
+let candidatePieChart = null;
  
 /* ---------- Helpers ---------- */ 
 const $ = (id) => document.getElementById(id); 
@@ -161,20 +163,219 @@ $('results').addEventListener('click', (e) => {
 function bar(label, v) { 
   return `<div class="bd"><div class="bd-head"><span>${label}</span><b>${v}%</b></div><div class="meter"><i style="width:${v}%"></i></div></div>`; 
 } 
+/* ---------- Candidate match pie chart ---------- */
+
+function renderCandidatePieChart(breakdown) {
+    const canvas = $('candidatePieChart');
+
+    if (!canvas || typeof Chart === 'undefined') {
+        console.warn('Chart.js is unavailable.');
+        return;
+    }
+
+    // Destroy the previous chart before creating another one.
+    if (candidatePieChart) {
+        candidatePieChart.destroy();
+        candidatePieChart = null;
+    }
+
+    const skills = Number(breakdown.skills) || 0;
+    const experience = Number(breakdown.experience) || 0;
+    const education = Number(breakdown.education) || 0;
+
+    // Update the legend with the selected candidate's scores.
+    $('chart-skills-value').textContent = skills + '%';
+    $('chart-experience-value').textContent = experience + '%';
+    $('chart-education-value').textContent = education + '%';
+
+    candidatePieChart = new Chart(canvas, {
+        type: 'pie',
+
+        data: {
+            labels: [
+                'Skills Match',
+                'Experience',
+                'Education'
+            ],
+
+            datasets: [{
+                data: [
+                    skills,
+                    experience,
+                    education
+                ],
+
+                backgroundColor: [
+                    '#0d9488',
+                    '#6366f1',
+                    '#f59e0b'
+                ],
+
+                borderColor: '#ffffff',
+                borderWidth: 4,
+                hoverBorderWidth: 5,
+                hoverOffset: 15,
+                spacing: 3,
+                borderRadius: 5
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+
+            // Animate the chart when a candidate is opened.
+            animation: {
+                animateRotate: true,
+                animateScale: true,
+                duration: 1100,
+                easing: 'easeOutQuart'
+            },
+
+            interaction: {
+                mode: 'nearest'
+            },
+
+            plugins: {
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+                    enabled: true,
+
+                    backgroundColor: '#16202e',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    padding: 12,
+                    cornerRadius: 8,
+
+                    callbacks: {
+                        label: function(context) {
+                            return ' Match score: ' +
+                                context.raw + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
  
-function openDrawer(id) { 
-  const r = ranked.find(x => x.id === id); 
-  $('d-name').textContent = r.name; 
-  $('d-sub').textContent = `${r.role} · overall score ${r.score}/100`; 
-  $('d-body').innerHTML = 
-    bar('Skills match', r.breakdown.skills) + bar('Experience', r.breakdown.experience) + bar('Education', r.breakdown.education) + 
-    `<h2>Matched skills</h2>${r.matched.map(s => `<span class="chip">${esc(s)}</span>`).join('') || '<p class="hint">None</p>'}` + 
-    `<h2>Missing skills</h2>${r.missing.map(s => `<span class="chip miss">${esc(s)}</span>`).join('') || '<p class="hint">None</p>'}` + 
-    (r.explanation ? `<h2>Why this score</h2><p>${esc(r.explanation)}</p>` 
-      : `<div class="note">AI explanation for this score will appear here once the model is connected.</div>`); 
-  $('drawer').hidden = false; 
-  $('d-close').focus(); 
-} 
+function openDrawer(id) {
+    const r = ranked.find(x => x.id === id);
+
+    // Ignore invalid candidate IDs.
+    if (!r || r.pending || !r.breakdown) {
+        return;
+    }
+
+    $('d-name').textContent = r.name;
+
+    $('d-sub').textContent =
+        `${r.role} · Overall score ${r.score}/100`;
+
+    $('d-body').innerHTML = `
+        <section class="chart-panel">
+
+            <h3>Candidate Match Analysis</h3>
+
+            <p class="chart-subtitle">
+                Skills, experience and education match
+            </p>
+
+            <div class="pie-chart-container">
+                <canvas id="candidatePieChart"></canvas>
+            </div>
+
+            <div class="chart-legend">
+
+                <div class="legend-item">
+                    <span class="legend-dot skills-dot"></span>
+                    <span>Skills Match</span>
+                    <strong id="chart-skills-value">
+                        0%
+                    </strong>
+                </div>
+
+                <div class="legend-item">
+                    <span class="legend-dot experience-dot"></span>
+                    <span>Experience</span>
+                    <strong id="chart-experience-value">
+                        0%
+                    </strong>
+                </div>
+
+                <div class="legend-item">
+                    <span class="legend-dot education-dot"></span>
+                    <span>Education</span>
+                    <strong id="chart-education-value">
+                        0%
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="candidate-details">
+
+            <h3>Score Breakdown</h3>
+
+            ${bar('Skills match', r.breakdown.skills)}
+
+            ${bar('Experience', r.breakdown.experience)}
+
+            ${bar('Education', r.breakdown.education)}
+
+            <h3>Matched Skills</h3>
+
+            ${
+                r.matched.length
+                ? r.matched.map(s =>
+                    `<span class="chip">${esc(s)}</span>`
+                  ).join('')
+                : '<p class="hint">No matching skills found.</p>'
+            }
+
+            <h3 style="margin-top:20px">Missing Skills</h3>
+
+            ${
+                r.missing.length
+                ? r.missing.map(s =>
+                    `<span class="chip miss">${esc(s)}</span>`
+                  ).join('')
+                : '<p class="hint">No missing required skills.</p>'
+            }
+
+            ${
+                r.explanation
+                ? `
+                    <h3 style="margin-top:20px">
+                        Why this score?
+                    </h3>
+                    <p>${esc(r.explanation)}</p>
+                  `
+                : `
+                    <div class="note">
+                        This prototype calculates matching scores
+                        using predefined weights. An AI-generated
+                        explanation can be added when the ranking
+                        model is connected.
+                    </div>
+                  `
+            }
+
+        </section>
+    `;
+
+    // Open the drawer before rendering the chart.
+    $('drawer').hidden = false;
+
+    renderCandidatePieChart(r.breakdown);
+
+    $('d-close').focus();
+}
 $('d-close').addEventListener('click', () => $('drawer').hidden = true); 
 $('drawer').addEventListener('click', (e) => { if (e.target === $('drawer')) $('drawer').hidden = true; }); 
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('drawer').hidden = true; }); 
