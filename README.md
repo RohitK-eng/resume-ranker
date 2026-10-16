@@ -28,5 +28,3 @@ The backend must allow CORS from the frontend's domain.
 ## Ideas to add next
 PDF/DOCX upload to the backend, real candidate database, login, compare two candidates, bias check.
 
-## Deploy on Render
-https://voting-management-system-1-171p.onrender.com
